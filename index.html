@@ -1,23 +1,343 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>alysq.com</title>
-    <style>
-        body { font-family: -apple-system, "Segoe UI", sans-serif; display: flex;
-               min-height: 100vh; align-items: center; justify-content: center;
-               margin: 0; background: #f5f5f5; color: #333; }
-        .card { background: #fff; padding: 3rem 4rem; border-radius: 12px;
-                box-shadow: 0 4px 16px rgba(0,0,0,.08); text-align: center; }
-        h1 { margin: 0 0 .5rem; font-size: 1.6rem; }
-        p { margin: 0; color: #888; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>阿里社区 · 产品导航</title>
+<meta name="description" content="阿里相关社区引导首页，收录支付宝、天猫淘宝、阿里云系列、阿里云网盘等产品入口。">
+<link href="https://apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://apps.bdimg.com/libs/fontawesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+<style>
+  body {
+    background: #fafbfc;
+    color: #1f2329;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    padding-top: 60px;
+  }
+  a { color: #1f2329; text-decoration: none; }
+  a:hover, a:focus { color: #1677ff; text-decoration: none; }
+  ::selection { background: #1677ff; color: #fff; }
+
+  /* ============ Navbar ============ */
+  .navbar-min {
+    background: rgba(255,255,255,.88);
+    border: 0; border-radius: 0; margin-bottom: 0;
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    backdrop-filter: saturate(180%) blur(12px);
+    transition: box-shadow .25s ease, background .25s ease;
+  }
+  .navbar-min.is-scrolled { box-shadow: 0 1px 0 rgba(0,0,0,.05), 0 6px 24px rgba(31,35,41,.06); }
+  .navbar-min .navbar-brand {
+    font-weight: 700; font-size: 17px; letter-spacing: .5px; padding: 20px 15px;
+  }
+  .navbar-min .navbar-brand .dot {
+    display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+    background: #1677ff; margin-right: 7px; vertical-align: 2px;
+  }
+  .navbar-min .nav > li > a {
+    color: #6b7280; font-size: 14px; padding: 20px 16px;
+    transition: color .2s ease;
+  }
+  .navbar-min .nav > li > a:hover,
+  .navbar-min .nav > li.active > a { color: #1677ff; background: transparent; }
+  .navbar-min .navbar-toggle { border: 0; margin-top: 13px; }
+  .navbar-min .navbar-toggle .icon-bar { background: #6b7280; }
+  .navbar-min .navbar-toggle:hover { background: transparent; }
+
+  /* ============ Hero ============ */
+  .hero { position: relative; padding: 96px 0 84px; text-align: center; overflow: hidden; }
+  .hero::before {
+    content: ""; position: absolute; top: -260px; left: 50%; width: 900px; height: 520px;
+    transform: translateX(-50%);
+    background: radial-gradient(closest-side, rgba(22,119,255,.10), rgba(22,119,255,0) 70%);
+    pointer-events: none;
+  }
+  .hero .container { position: relative; }
+  .hero .tag {
+    display: inline-block; font-size: 12px; letter-spacing: 1px; color: #1677ff;
+    background: #eef4ff; border-radius: 999px; padding: 6px 14px; margin-bottom: 22px;
+  }
+  .hero h1 {
+    font-size: 44px; font-weight: 700; letter-spacing: -0.5px;
+    margin: 0 0 18px; line-height: 1.25;
+  }
+  .hero h1 .grad {
+    background: linear-gradient(90deg, #1677ff, #00b4d8);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero .lead { color: #7a828c; font-size: 16px; margin: 0 auto; max-width: 560px; line-height: 1.9; }
+  .hero .actions { margin-top: 34px; }
+  .btn-pill {
+    display: inline-block; border-radius: 999px; padding: 11px 26px; font-size: 14px;
+    border: 1px solid transparent; transition: all .22s ease; margin: 0 6px;
+  }
+  .btn-primary-pill { background: #1677ff; color: #fff; box-shadow: 0 6px 18px rgba(22,119,255,.24); }
+  .btn-primary-pill:hover { background: #0f63dd; color: #fff; transform: translateY(-2px); }
+  .btn-ghost-pill { background: #fff; color: #4b5563; border-color: #e6e8eb; }
+  .btn-ghost-pill:hover { color: #1677ff; border-color: #1677ff; transform: translateY(-2px); }
+
+  /* ============ Section ============ */
+  .section { padding: 26px 0 78px; }
+  .section-head { text-align: center; margin-bottom: 42px; }
+  .section-head .kicker {
+    font-size: 12px; letter-spacing: 3px; color: #a8b0b9; text-transform: uppercase;
+  }
+  .section-head h2 { font-size: 26px; font-weight: 700; margin: 10px 0 10px; letter-spacing: -0.2px; }
+  .section-head p { color: #7a828c; font-size: 14px; margin: 0; }
+
+  /* ============ Product cards ============ */
+  .card {
+    position: relative; display: block; background: #fff; border: 1px solid #edeff2;
+    border-radius: 14px; padding: 32px 26px 28px; margin-bottom: 26px; overflow: hidden;
+    transition: transform .28s cubic-bezier(.2,.7,.3,1), box-shadow .28s ease, border-color .28s ease;
+  }
+  .card::after {
+    content: ""; position: absolute; inset: 0; border-radius: 14px; pointer-events: none;
+    opacity: 0; transition: opacity .28s ease;
+    background: linear-gradient(180deg, rgba(22,119,255,.05), rgba(22,119,255,0) 60%);
+  }
+  .card:hover {
+    transform: translateY(-6px); border-color: rgba(22,119,255,.35);
+    box-shadow: 0 14px 34px rgba(31,35,41,.09);
+  }
+  .card:hover::after { opacity: 1; }
+  .card .icon {
+    width: 54px; height: 54px; border-radius: 14px; font-size: 22px; color: #fff;
+    display: flex; align-items: center; justify-content: center; margin-bottom: 20px;
+  }
+  .ic-blue   { background: linear-gradient(135deg, #3b8cff, #1677ff); box-shadow: 0 8px 18px rgba(22,119,255,.28); }
+  .ic-orange { background: linear-gradient(135deg, #ff9a3c, #ff6a00); box-shadow: 0 8px 18px rgba(255,106,0,.26); }
+  .ic-purple { background: linear-gradient(135deg, #8b7bff, #5b46e6); box-shadow: 0 8px 18px rgba(91,70,230,.26); }
+  .ic-teal   { background: linear-gradient(135deg, #34d0c0, #0aa39a); box-shadow: 0 8px 18px rgba(10,163,154,.26); }
+
+  .card h3 { font-size: 17px; font-weight: 600; margin: 0 0 10px; }
+  .card .desc { font-size: 13px; color: #8a9099; line-height: 1.85; min-height: 48px; margin-bottom: 16px; }
+  .card .more { font-size: 12px; color: #1677ff; letter-spacing: .5px; }
+  .card .more .fa { margin-left: 5px; font-size: 11px; transition: transform .25s ease; }
+  .card:hover .more .fa { transform: translateX(4px); }
+  .card .badge-new {
+    position: absolute; top: 16px; right: 16px; font-size: 11px; font-weight: 400;
+    color: #0aa39a; background: #e6fbf8; border-radius: 999px; padding: 3px 9px;
+  }
+
+  /* ============ Stats ============ */
+  .stats { background: #fff; border-top: 1px solid #edeff2; border-bottom: 1px solid #edeff2; padding: 44px 0; }
+  .stat-item { text-align: center; padding: 12px 0; }
+  .stat-item .num { font-size: 30px; font-weight: 700; letter-spacing: -0.5px; color: #1f2329; }
+  .stat-item .num .plus { color: #1677ff; }
+  .stat-item .label { font-size: 13px; color: #8a9099; margin-top: 6px; }
+
+  /* ============ Notice ============ */
+  .notice {
+    background: #fff; border: 1px solid #edeff2; border-radius: 14px;
+    padding: 26px 28px; display: flex; align-items: flex-start;
+  }
+  .notice .fa { color: #1677ff; font-size: 16px; margin-right: 12px; margin-top: 3px; }
+  .notice p { margin: 0; font-size: 13px; color: #7a828c; line-height: 1.95; }
+
+  /* ============ Footer ============ */
+  .footer { background: #fff; border-top: 1px solid #edeff2; padding: 42px 0 34px; }
+  .footer .brand { font-weight: 700; font-size: 15px; margin-bottom: 10px; }
+  .footer .brand .dot {
+    display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+    background: #1677ff; margin-right: 6px; vertical-align: 2px;
+  }
+  .footer .slogan { font-size: 13px; color: #8a9099; margin-bottom: 22px; }
+  .footer .beian { margin-bottom: 14px; font-size: 13px; color: #8a9099; }
+  .footer .beian a { color: #8a9099; margin: 0 6px; transition: color .2s ease; }
+  .footer .beian a:hover { color: #1677ff; }
+  .footer .beian img { width: 14px; height: 14px; vertical-align: -2px; margin-right: 4px; }
+  .footer .copyright { font-size: 12px; color: #b3b9c0; }
+
+  /* ============ Back to top ============ */
+  #toTop {
+    position: fixed; right: 22px; bottom: 22px; width: 40px; height: 40px;
+    border-radius: 50%; background: #fff; border: 1px solid #edeff2; color: #8a9099;
+    display: none; align-items: center; justify-content: center; z-index: 99;
+    box-shadow: 0 6px 20px rgba(31,35,41,.10); transition: all .22s ease;
+  }
+  #toTop:hover { color: #1677ff; border-color: #1677ff; transform: translateY(-2px); }
+
+  @media (max-width: 991px) {
+    .hero h1 { font-size: 34px; }
+    .stat-item { margin-bottom: 10px; }
+  }
+  @media (max-width: 767px) {
+    body { padding-top: 52px; }
+    .hero { padding: 60px 0 54px; }
+    .hero h1 { font-size: 28px; }
+    .hero .lead { font-size: 15px; }
+    .card .desc { min-height: 0; }
+    .notice { padding: 22px; }
+  }
+</style>
 </head>
 <body>
-    <div class="card">
-        <h1>alysq.com</h1>
-        <p>Site initialized by oject.php</p>
+
+<nav class="navbar navbar-min navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav-main">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#"><span class="dot"></span>阿里社区</a>
     </div>
+    <div class="collapse navbar-collapse" id="nav-main">
+      <ul class="nav navbar-nav navbar-right">
+        <li class="active"><a href="#products">产品导航</a></li>
+        <li><a href="#about">关于社区</a></li>
+        <li><a href="#footer">备案信息</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container">
+    <span class="tag">A L I · C O M M U N I T Y</span>
+    <h1>阿里生态 <span class="grad">一站直达</span></h1>
+    <p class="lead">汇聚支付宝、天猫淘宝、阿里云系列与阿里云网盘的社区导航索引，<br>常用入口一页速达，简洁高效。</p>
+    <div class="actions">
+      <a class="btn-pill btn-primary-pill" href="#products">浏览产品 <i class="fa fa-arrow-right" style="margin-left:4px;"></i></a>
+      <a class="btn-pill btn-ghost-pill" href="#about">了解社区</a>
+    </div>
+  </div>
+</header>
+
+<section class="section" id="products">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">Products</div>
+      <h2>产品导航</h2>
+      <p>精选阿里生态核心产品入口，点击即可前往</p>
+    </div>
+    <div class="row">
+
+      <div class="col-sm-6 col-md-3">
+        <a class="card" href="https://www.alipay.com/" target="_blank" rel="noopener">
+          <div class="icon ic-blue"><i class="fa fa-credit-card"></i></div>
+          <h3>支付宝</h3>
+          <div class="desc">支付转账、生活缴费与理财服务，覆盖线上线下的一站式支付体验。</div>
+          <div class="more">进入官网 <i class="fa fa-angle-right"></i></div>
+        </a>
+      </div>
+
+      <div class="col-sm-6 col-md-3">
+        <a class="card" href="https://www.tmall.com/" target="_blank" rel="noopener">
+          <div class="icon ic-orange"><i class="fa fa-shopping-cart"></i></div>
+          <h3>天猫淘宝</h3>
+          <div class="desc">电商购物与商家服务体系，聚集品牌旗舰与海量优选好物。</div>
+          <div class="more">进入官网 <i class="fa fa-angle-right"></i></div>
+        </a>
+      </div>
+
+      <div class="col-sm-6 col-md-3">
+        <a class="card" href="https://www.aliyun.com/" target="_blank" rel="noopener">
+          <div class="icon ic-purple"><i class="fa fa-cloud"></i></div>
+          <h3>阿里云系列</h3>
+          <div class="desc">云服务器、数据库、大数据与开发者工具，云上解决方案全集合。</div>
+          <div class="more">进入官网 <i class="fa fa-angle-right"></i></div>
+        </a>
+      </div>
+
+      <div class="col-sm-6 col-md-3">
+        <a class="card" href="https://www.aliyundrive.com/" target="_blank" rel="noopener">
+          <span class="badge-new">常用</span>
+          <div class="icon ic-teal"><i class="fa fa-hdd-o"></i></div>
+          <h3>阿里云网盘</h3>
+          <div class="desc">个人与团队文件存储备份，多端同步、随时随地访问云端资料。</div>
+          <div class="more">进入官网 <i class="fa fa-angle-right"></i></div>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-6 col-sm-3 stat-item">
+        <div class="num">4</div>
+        <div class="label">核心产品</div>
+      </div>
+      <div class="col-xs-6 col-sm-3 stat-item">
+        <div class="num">10<span class="plus">+</span></div>
+        <div class="label">服务分类</div>
+      </div>
+      <div class="col-xs-6 col-sm-3 stat-item">
+        <div class="num">24<span class="plus">h</span></div>
+        <div class="label">入口可用</div>
+      </div>
+      <div class="col-xs-6 col-sm-3 stat-item">
+        <div class="num">0</div>
+        <div class="label">使用费用</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="about" style="padding-bottom:70px;">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1">
+        <div class="notice">
+          <i class="fa fa-info-circle"></i>
+          <p>本站为阿里相关产品的第三方社区导航索引，仅提供官方入口指引与经验交流。页面所列商标、产品及服务版权均归各自官方所有；如涉及内容权益问题，欢迎通过页面备案信息联系处理。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer" id="footer">
+  <div class="container text-center">
+    <div class="brand"><span class="dot"></span>阿里社区</div>
+    <div class="slogan">简洁 · 高效 · 一站直达阿里生态</div>
+    <div class="beian">
+      <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">鲁ICP备2025144109号-20</a>
+      <span style="color:#e0e3e7;">|</span>
+      <a href="http://www.beian.gov.cn/portal/registerSystemInfo" target="_blank" rel="noopener">
+        <img src="https://www.beian.gov.cn/img/ghs.png" alt="公安备案图标">鲁公网安备37130202373077号
+      </a>
+    </div>
+    <div class="copyright">© 2026 阿里社区 · 本站仅作导航索引使用</div>
+  </div>
+</footer>
+
+<a href="#" id="toTop" title="返回顶部"><i class="fa fa-chevron-up"></i></a>
+
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script>
+  $(function () {
+    var $nav = $('.navbar-min');
+
+    // 滚动时导航栏加阴影
+    $(window).on('scroll', function () {
+      $nav.toggleClass('is-scrolled', $(this).scrollTop() > 10);
+      if ($(this).scrollTop() > 300) {
+        $('#toTop').css('display', 'flex').hide().fadeIn(200);
+      } else {
+        $('#toTop').fadeOut(200);
+      }
+    });
+
+    // 平滑滚动 + 移动端点击后收起菜单
+    $('.navbar-min .nav a, #toTop').on('click', function (e) {
+      var hash = $(this).attr('href');
+      if (hash && hash.indexOf('#') === 0 && $(hash).length) {
+        e.preventDefault();
+        $('html, body').animate({ scrollTop: $(hash).offset().top - 60 }, 450);
+      }
+      if ($(window).width() < 768) { $('#nav-main').collapse('hide'); }
+    });
+  });
+</script>
 </body>
 </html>
